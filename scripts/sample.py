@@ -25,9 +25,8 @@ class PublishCoco:
         for i in range(len(data)):
             np_body_part_id[data[i].part_id] = data[i].part_id
             np_body_parts[data[i].part_id] = data[i]
-	    print "----"
-	    print data[i].part_id
-            print "----"
+	    # print "----"
+	    # print data[i].part_id
         return np_body_part_id, np_body_parts
 
 
@@ -37,20 +36,20 @@ class PublishCoco:
             coco_arr.num_person = persons.size
 	    print "person.size: "+str(persons.size)
             for i in range(persons.size):
-		print "i: "+str(i)
+		# print "i: "+str(i)
             	coco = COCO()
                 body_list, data = self.set_body_parts(persons[i].body_part)
 		for j in range(len(data)):
-			data[j].x *= 1920
-			data[j].y *= 1080
+			data[j].x *= pose.image_w
+			data[j].y *= pose.image_h
 
-		print data[1]
-		print body_list
+		# print data[1]
+		# print body_list
                 if body_list[0] != -1:
                     coco.Nose.x = data[0].x
                     coco.Nose.y = data[0].y
                     coco.Nose.confidence = data[0].confidence
-		    print "data[0]: "+str(data[0])
+		    # print "data[0]: "+str(data[0])
                 if body_list[1] != -1:
                     coco.Neck.x = data[1].x
                     coco.Neck.y = data[1].y
@@ -155,7 +154,10 @@ class PublishCoco:
             body_list = np.full(19, -1)
             self.pub = rospy.Publisher('/coco_keypoints/pose', COCO_ARR, queue_size=10)	    
 			# print (pose.persons[0].body_part[0])
+            print "------------------------------------"
             persons = np.array(pose.persons)
+            print "image_w: "+str(pose.image_w)
+            print "image_h: "+str(pose.image_h)
 			# print "---------------------"
 			# print data.shape 
 			# print data.ndim
